@@ -1,0 +1,9 @@
+## Interface:90002
+## Title: LibBEncode
+## Author: Deathbaron
+## Version: 1.0
+## Dependencies: 
+## Notes: LibBEncode library
+## SavedVariables: 
+
+LibBEncode.lua

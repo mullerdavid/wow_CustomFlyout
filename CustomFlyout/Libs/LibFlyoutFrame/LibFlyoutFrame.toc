@@ -1,0 +1,9 @@
+## Interface:90002
+## Title: LibFlyoutFrame
+## Author: Deathbaron
+## Version: 1.0
+## Dependencies: 
+## Notes: Custom flyout library
+## SavedVariables: 
+
+LibFlyoutFrame.lua
