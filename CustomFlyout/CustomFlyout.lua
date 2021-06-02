@@ -202,7 +202,7 @@ end
 function L.GenerateItemEnchant(item)
 	local icon = item and "item:"..tostring(item)
 	local macrotext
-	if tostring(tonumber(item))==item
+	if type(item)=="number" or tostring(tonumber(item))==item
 	then
 		macrotext = "/use item:"..item
 	elseif item
@@ -245,7 +245,7 @@ end
 function L.GenerateItem(item)
 	local icon = item and "item:"..tostring(item)
 	local macrotext
-	if tostring(tonumber(item))==item
+	if type(item)=="number" or tostring(tonumber(item))==item
 	then
 		macrotext = "/use item:"..item
 	elseif item
