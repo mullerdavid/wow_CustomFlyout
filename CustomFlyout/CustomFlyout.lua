@@ -459,7 +459,7 @@ local function ProcessCommand(msg)
 end
 
 local function Init()
-	print(ADDON .. " loaded, for more information type /flyout")
+	--print(ADDON .. " loaded, for more information type /flyout")
 end
 
 local worldEnterd = false
