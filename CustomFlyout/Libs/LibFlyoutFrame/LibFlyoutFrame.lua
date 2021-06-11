@@ -940,10 +940,10 @@ function L.ProxyButtonCreate(parent)
 	
 	if parent.action
 	then
-		self:SetAttribute("type1", "macro")
-		self:SetAttribute("type2", "macro")
-		self:SetAttribute("macrotext1", "/click "..parentName)
-		self:SetAttribute("macrotext2", "/click "..parentName.." RightButton ")
+		self:SetAttribute("*type1", "macro")
+		self:SetAttribute("*type2", "macro")
+		self:SetAttribute("*macrotext1", "/click "..parentName)
+		self:SetAttribute("*macrotext2", "/click "..parentName.." RightButton ")
 		self:SetAttribute("$action", parent.action)
 	end
 	

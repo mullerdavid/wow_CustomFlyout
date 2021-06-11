@@ -228,7 +228,7 @@ function L.GenerateConjure(item)
 	end
 	local icon = itemId and "item:"..tostring(itemId)
 	local macrotext = "/use item:"..tostring(itemId)
-	return {["$icon"]=icon, ["type1"]="macro", ["macrotext1"]=macrotext, ["type2"]="spell", ["spell2"]=spellName}
+	return {["$icon"]=icon, ["*type1"]="macro", ["*macrotext1"]=macrotext, ["*type2"]="spell", ["spell2"]=spellName}
 end
 
 function L.GenerateSpell(item)
