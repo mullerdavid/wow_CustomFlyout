@@ -917,11 +917,6 @@ function L.ProxyButtonCreate(parent)
 		return nil
 	]=])	
 	
-	if (parent:GetName():find("^MultiBarLeftButton%d+$")) or (parent:GetName():find("^MultiBarRightButton%d+$"))
-	then
-		self:SetAttribute("$defaultdirection", "LEFT")
-	end
-	
 	self:SetFrameRef("CustomFlyout", flyout)
 	
     self:HookScript('OnEnter', L.ProxyButtonOnEnter)
@@ -934,6 +929,15 @@ function L.ProxyButtonCreate(parent)
 		self:SetFrameStrata(parent:GetFrameStrata())
 		self:SetFrameLevel(parent:GetFrameLevel()+10)
 		self:SetScale(parent:GetWidth()/self:GetWidth())
+		local name = parent:GetName() or ""
+		if name:find("^ActionButton%d+$") or name:find("^MultiBarBottomLeftButton%d+$") or name:find("^MultiBarBottomRightButton%d+$")
+		then
+			self:SetAttribute("$blizzard", true)
+		elseif name:find("^MultiBarLeftButton%d+$") or name:find("^MultiBarRightButton%d+$")
+		then
+			self:SetAttribute("$defaultdirection", "LEFT")
+			self:SetAttribute("$blizzard", true)
+		end
 	else
 		self:SetScale(1)
 	end
@@ -955,29 +959,43 @@ function L.ProxyButtonCreate(parent)
 	end
 end
 
-function L.ProxyButtonOnEnter(self)
-	local parent = self:GetParent()
-	if ( GetCVar("UberTooltips") == "1" )
-	then
-		GameTooltip_SetDefaultAnchor(GameTooltip, self)
-	else
-		local pparent = parent:GetParent()
-		if ( pparent == MultiBarBottomRight or pparent == MultiBarRight or pparent == MultiBarLeft )
-		then
-			GameTooltip:SetOwner(self, "ANCHOR_LEFT");
-		else
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-		end
-	end
-	GameTooltip:SetAction(parent.action)
-
+function L.ProxyButtonOnEnter(self, ...)
 	L.ProxyButtonUpdate(self)
+	local parent = self:GetParent()
+	local handler = parent:GetScript("OnEnter")
+	if handler and not self:GetAttribute("$blizzard")
+	then
+		handler(parent, ...)
+	else
+		print("self OnEnter")
+		if ( GetCVar("UberTooltips") == "1" )
+		then
+			GameTooltip_SetDefaultAnchor(GameTooltip, self)
+		else
+			local pparent = parent:GetParent()
+			if ( pparent == MultiBarBottomRight or pparent == MultiBarRight or pparent == MultiBarLeft )
+			then
+				GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+			else
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+			end
+		end
+		GameTooltip:SetAction(parent.action)
+	end
+
 end
 
-function L.ProxyButtonOnLeave(self)
-	GameTooltip:Hide()
-	
+function L.ProxyButtonOnLeave(self, ...)
 	L.ProxyButtonUpdate(self)
+	local parent = self:GetParent()
+	local handler = parent:GetScript("OnLeave")
+	if handler and not self:GetAttribute("$blizzard")
+	then
+		handler(parent, ...)
+	else
+		print("self OnLeave")
+		GameTooltip:Hide()
+	end
 end
 
 function L.ProxyButtonUpdate(self)
