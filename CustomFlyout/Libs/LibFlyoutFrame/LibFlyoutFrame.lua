@@ -967,7 +967,6 @@ function L.ProxyButtonOnEnter(self, ...)
 	then
 		handler(parent, ...)
 	else
-		print("self OnEnter")
 		if ( GetCVar("UberTooltips") == "1" )
 		then
 			GameTooltip_SetDefaultAnchor(GameTooltip, self)
@@ -993,7 +992,6 @@ function L.ProxyButtonOnLeave(self, ...)
 	then
 		handler(parent, ...)
 	else
-		print("self OnLeave")
 		GameTooltip:Hide()
 	end
 end
