@@ -365,6 +365,13 @@ function L.FlyoutCreate()
 	self.closeproxy:Hide()
 	tinsert(UISpecialFrames, self.closeproxy:GetName())
 	
+	if not SpellFlyout
+	then
+		flyout.overlay = CreateFrame("Frame", "SpellFlyout")
+		flyout.overlay:SetAllPoints(flyout)
+		flyout.overlay:Show()
+	end
+	
 	self:SetScript("OnEvent", L.FlyoutOnEvent)
 	self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 	
@@ -713,6 +720,7 @@ function L.ProxyButtonCreate(parent)
 		if button=="RightButton" then return end
 		
 		local flyout = self:GetFrameRef("CustomFlyout")
+		local flyoutoverlay = self:GetFrameRef("CustomFlyoutOverlay")
 		local action = self:RunAttribute("$funcCalculateAction", button) 
 		local buttonActions, macroid = self:RunAttribute("$funcGetFlyoutActions", action) 
 		local flyoutVisible = flyout:IsVisible()
@@ -720,6 +728,7 @@ function L.ProxyButtonCreate(parent)
 		if flyout:GetParent() == self
 		then
 			flyout:Hide()
+			if flyoutoverlay then flyoutoverlay:SetParent(nil) end
 		end
 		
 		if not buttonActions then return end
@@ -827,6 +836,7 @@ function L.ProxyButtonCreate(parent)
 				flyout:SetWidth((prevButton:GetWidth()+CUSTOMFLYOUT_DEFAULT_SPACING) * numButtons - CUSTOMFLYOUT_DEFAULT_SPACING + CUSTOMFLYOUT_INITIAL_SPACING + CUSTOMFLYOUT_FINAL_SPACING)
 			end
 			flyout:SetParent(self)
+			if flyoutoverlay then flyoutoverlay:SetParent(self:GetParent()) end
 			flyout:ClearAllPoints()
 			if (direction == "UP") then
 				flyout:SetPoint("BOTTOM", self, "TOP", 0, 0)
@@ -918,6 +928,7 @@ function L.ProxyButtonCreate(parent)
 	]=])	
 	
 	self:SetFrameRef("CustomFlyout", flyout)
+	self:SetFrameRef("CustomFlyoutOverlay", flyout.overlay)
 	
     self:HookScript('OnEnter', L.ProxyButtonOnEnter)
     self:HookScript('OnLeave', L.ProxyButtonOnLeave)
