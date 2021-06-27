@@ -367,7 +367,7 @@ function L.FlyoutCreate()
 	
 	if not SpellFlyout
 	then
-		flyout.overlay = CreateFrame("Frame", "SpellFlyout")
+		flyout.overlay = CreateFrame("Frame", "SpellFlyout", nil, "SecureFrameTemplate")
 		flyout.overlay:SetAllPoints(flyout)
 		flyout.overlay:Show()
 	end
@@ -565,6 +565,9 @@ function L.FlyoutButtonUpdate(self)
 				then
 					self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetText(tooltip) end)
 					self:SetScript("OnLeave", function() GameTooltip:Hide() end)
+				else
+					self:SetScript("OnEnter", nil)
+					self:SetScript("OnLeave", nil)
 				end
 			elseif itype == "target"
 			then
@@ -587,6 +590,8 @@ function L.FlyoutButtonUpdate(self)
 					iconid = "Interface\\TargetingFrame\\UI-RaidTargetingIcons"
 					iconcoords = coords[id]
 				end
+				self:SetScript("OnEnter", nil)
+				self:SetScript("OnLeave", nil)
 			else
 				L.FlyoutButtonReset(self)
 			end
