@@ -1,7 +1,7 @@
 local doc = [=[ [options] subType, list1, list2, ...
 [options] maximum one from each line, coma separated, optional
    left,right,up,down, defaults up for unknown buttons or default blizz frame direction
-   item_ench_temp,conjure,spell,item,mixed defaults mixed
+   item_ench_temp,conjure,spell,item,mixed,target defaults mixed
 item_ench_temp elements (poisons, wrightstones, oils, etc, left click for MH, right click for OH)
    subType: dynamic or fixed
    list (for fixed): coma separated list of item ids or names
@@ -11,9 +11,12 @@ conjure elements (left click use, right click conjure spell)
 spell elements
    subType: profession/portal/teleport/totem_earth/totem_fire/totem_air/totem_water/trap/track/aspect/warlockpet/fixed
    list (for fixed): coma separated list of spell ids or names
-item element
+item elements
    subType: fixed
    list (for fixed): coma separated list of item ids or names
+target element
+   subType: n/a
+   list: n/a
 mixed elements
    subType: fixed
    list: coma separated list of spell:id/item:id/macro:id, icon and tooltip are not dynamic for macros
@@ -261,6 +264,14 @@ function L.GenerateMacro(macro)
 	return {["$icon"]=icon, ["type"]="macro", ["macro"]=macro}
 end
 
+function L.GenerateTarget(id)
+	if id == 0
+	then
+		return {["$icon"]="target:0", ["type"]="macro", ["macrotext"]="/run local i=GetRaidTargetIndex(\"target\") if i then SetRaidTarget(\"target\", i) end"}
+	end
+	return {["$icon"]="target:"..id, ["type"]="macro", ["macrotext"]="/script SetRaidTargetIcon(\"target\","..id..")"}
+end
+
 function L.ActionGeneratorItemEnchant(list, mainType, subType, dynamic)
 	local dynamiccache = nil
 	if dynamic
@@ -350,6 +361,15 @@ function L.ActionGeneratorItem(list, mainType, subType, dynamic)
 	return actions
 end
 
+function L.ActionGeneratorTarget(list, mainType, subType, dynamic)
+	local actions = {}
+	for i=0,8
+	do
+		table.insert(actions, L.GenerateTarget(i))
+	end
+	return actions
+end
+
 function L.ActionGeneratorMixed(list, mainType, subType, dynamic)
 	local actions = {}
 	for i=1,math.min(10, #list)
@@ -383,7 +403,7 @@ function L.GetActionGeneratorParams(options, list)
 	
 	for _, option in ipairs(options)
 	do
-		if option=="item_ench_temp" or option=="conjure" or option=="spell" or option=="item"
+		if option=="item_ench_temp" or option=="conjure" or option=="spell" or option=="item" or option=="target"
 		then
 			mainType = option
 		end
@@ -431,6 +451,9 @@ function L.GetActionGeneratorParams(options, list)
 			subType = table.remove(list, 1)
 		end
 		generator = L.ActionGeneratorItem
+	elseif mainType=="target"
+	then
+		generator = L.ActionGeneratorTarget
 	else
 		if list[1]=="fixed"
 		then
