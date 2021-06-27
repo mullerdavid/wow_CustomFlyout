@@ -1,7 +1,7 @@
 ## Interface:20501
 ## Title: CustomFlyout
 ## Author: Deathbaron
-## Version: 0.103
+## Version: 0.104
 ## Dependencies: 
 ## Notes: Creates custom flyouts
 ## SavedVariables: 
