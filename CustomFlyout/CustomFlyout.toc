@@ -1,7 +1,7 @@
-## Interface:20501
+## Interface:90002
 ## Title: CustomFlyout
 ## Author: Deathbaron
-## Version: 0.105
+## Version: 0.110
 ## Dependencies: 
 ## Notes: Creates custom flyouts
 ## SavedVariables: 
@@ -10,4 +10,5 @@ Libs\LibStub\LibStub.lua
 Libs\LibBEncode\LibBEncode.lua
 Libs\LibFlyoutFrame\LibFlyoutFrame.lua
 CustomFlyout.lua
+CustomFlyoutMacro.lua
 ItemSpellData.lua

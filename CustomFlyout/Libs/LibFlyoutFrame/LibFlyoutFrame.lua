@@ -50,7 +50,7 @@ Actions
 	It is evaluated the following way. On button click (no keypress!), first it is checked if the corresponding action is macro or other. In case of macro, if there is any action for it with SetMacro, it is used. Otherwise the action value with SetAction is attempted.
 	Maximum 10 actions can be specified.
 	It should be and array of tables, where tables contain key value pairs for relevant SecureActionButtonTemplate attributes, extended with $icon key. See SecureActionButtonTemplate for more details.
-	$icon is used for look and tooltips, valid value formats are "spell:id", "spell:name", "item:id", "item:name", "texture:id", "texture:id:tooltip", "target:n", with spell and item tooltip and count is updated automatically, tooltip is optional for texture
+	$icon is used for look and tooltips, valid value formats are "spell:id", "spell:name", "item:id", "item:name", "texture:id", "texture:id:tooltip]", with spell and item tooltip and count is updated automatically, tooltip is optional for texture
 	Example: 
 		local actions = {
 			{["$icon"]="item:6948", ["*type1"]="macro", ["*type2"]="macro", macrotext1="/run print('btn1')",macrotext2="/cast Hearthstone"},
@@ -365,13 +365,6 @@ function L.FlyoutCreate()
 	self.closeproxy:Hide()
 	tinsert(UISpecialFrames, self.closeproxy:GetName())
 	
-	if not SpellFlyout
-	then
-		flyout.overlay = CreateFrame("Frame", "SpellFlyout", nil, "SecureFrameTemplate")
-		flyout.overlay:SetAllPoints(flyout)
-		flyout.overlay:Show()
-	end
-	
 	self:SetScript("OnEvent", L.FlyoutOnEvent)
 	self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 	
@@ -520,7 +513,6 @@ function L.FlyoutButtonUpdate(self)
 		if icon ~= oldicon
 		then
 			local iconid = ICON_UNKNOWN
-			local iconcoords = {4/64, 60/64, 4/64, 60/64}
 			local itype, id, tooltip
 			if icon
 			then
@@ -565,38 +557,11 @@ function L.FlyoutButtonUpdate(self)
 				then
 					self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetText(tooltip) end)
 					self:SetScript("OnLeave", function() GameTooltip:Hide() end)
-				else
-					self:SetScript("OnEnter", nil)
-					self:SetScript("OnLeave", nil)
 				end
-			elseif itype == "target"
-			then
-				id = tonumber(id)
-				local coords = {
-					[1] = { 0, 0.25, 0, 0.25 }, -- Star
-					[2] = { 0.25, 0.5, 0, 0.25 }, -- Circle
-					[3] = { 0.5, 0.75, 0, 0.25 }, -- Diamond
-					[4] = { 0.75, 1, 0, 0.25 }, -- Triangle
-					[5] = { 0, 0.25, 0.25, 0.5 }, -- Moon
-					[6] = { 0.25, 0.5, 0.25, 0.5 }, --Square
-					[7] = { 0.5, 0.75, 0.25, 0.5 }, -- Cross
-					[8] = { 0.75, 1, 0.25, 0.5 }, -- Skull
-				}
-				if id == 0
-				then
-					iconid = "Interface\\Buttons\\UI-AutoCastableOverlay"
-				elseif (coords[id])
-				then
-					iconid = "Interface\\TargetingFrame\\UI-RaidTargetingIcons"
-					iconcoords = coords[id]
-				end
-				self:SetScript("OnEnter", nil)
-				self:SetScript("OnLeave", nil)
 			else
 				L.FlyoutButtonReset(self)
 			end
 			self.icon:SetTexture(iconid)
-			self.icon:SetTexCoord(unpack(iconcoords))
 			self.oldicon = icon
 		end
 	else
@@ -748,7 +713,6 @@ function L.ProxyButtonCreate(parent)
 		if button=="RightButton" then return end
 		
 		local flyout = self:GetFrameRef("CustomFlyout")
-		local flyoutoverlay = self:GetFrameRef("CustomFlyoutOverlay")
 		local action = self:RunAttribute("$funcCalculateAction", button) 
 		local buttonActions, macroid = self:RunAttribute("$funcGetFlyoutActions", action) 
 		local flyoutVisible = flyout:IsVisible()
@@ -756,7 +720,6 @@ function L.ProxyButtonCreate(parent)
 		if flyout:GetParent() == self
 		then
 			flyout:Hide()
-			if flyoutoverlay then flyoutoverlay:SetParent(nil) end
 		end
 		
 		if not buttonActions then return end
@@ -864,7 +827,6 @@ function L.ProxyButtonCreate(parent)
 				flyout:SetWidth((prevButton:GetWidth()+CUSTOMFLYOUT_DEFAULT_SPACING) * numButtons - CUSTOMFLYOUT_DEFAULT_SPACING + CUSTOMFLYOUT_INITIAL_SPACING + CUSTOMFLYOUT_FINAL_SPACING)
 			end
 			flyout:SetParent(self)
-			if flyoutoverlay then flyoutoverlay:SetParent(self:GetParent()) end
 			flyout:ClearAllPoints()
 			if (direction == "UP") then
 				flyout:SetPoint("BOTTOM", self, "TOP", 0, 0)
@@ -956,7 +918,6 @@ function L.ProxyButtonCreate(parent)
 	]=])	
 	
 	self:SetFrameRef("CustomFlyout", flyout)
-	self:SetFrameRef("CustomFlyoutOverlay", flyout.overlay)
 	
     self:HookScript('OnEnter', L.ProxyButtonOnEnter)
     self:HookScript('OnLeave', L.ProxyButtonOnLeave)
