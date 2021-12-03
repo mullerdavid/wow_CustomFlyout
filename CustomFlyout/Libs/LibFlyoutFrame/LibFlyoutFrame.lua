@@ -651,6 +651,8 @@ function L.ProxyButtonsCreate()
 		 -- protected frames must have a name
 		if frame.IsProtected and frame:IsProtected() and frame.GetObjectType and frame:GetObjectType() == "CheckButton" and frame.action
 		then
+			local name = frame:GetName()
+			
 			--[[ Whitelist based on names?
 			^ActionButton%d+$
 			^MultiBarBottomLeftButton%d+$
@@ -664,7 +666,14 @@ function L.ProxyButtonsCreate()
 			^TinyExtraBarsContainerFrame%d+ButtonFrame%d+Button%d+_%d+$
 			]]--
 			
-			L.ProxyButtonCreate(frame)
+			if name and not -- Blacklisted frames (incompatible addon)
+				(
+					string.find(name, "^ButtonForge%d+$") 
+				)
+			then
+				L.ProxyButtonCreate(frame)
+			end
+			
 		end
 		frame = EnumerateFrames(frame)
 	end

@@ -33,31 +33,17 @@ function L.InitMacroFrame()
 	MacroFlyoutFrame.BG:SetPoint("TOPLEFT", 7, -7)
 	MacroFlyoutFrame.BG:SetPoint("BOTTOMRIGHT", -7, 7)
 	MacroFlyoutFrame.BG:SetColorTexture(0,0,0, 0.8)
-	MacroFlyoutFrame.BorderBox.OnOkay = function() print("TODO: update macro") MacroFlyoutFrame:Hide() end
+	MacroFlyoutFrame.BorderBox.OnOkay = function() if L.MacroFlyoutFrame_OnSave(MacroFlyoutFrame) then MacroFlyoutFrame:Hide() end end
 	MacroFlyoutFrame.BorderBox.OnCancel = function() MacroFlyoutFrame:Hide() end
 	MacroFlyoutFrame:Hide()
-	MacroFlyoutFrame:SetScript("OnShow", function(self) 
-		if self.Mode=="MacroFrame" 
-		then 
-			MacroFlyoutFrame:ClearAllPoints()
-			MacroFlyoutFrame:SetPoint("TOPLEFT", MacroFrame, "TOPRIGHT", 0, 0)
-			MacroFlyoutFrame:RegisterForDrag(nil)
-			print("TODO: parse current macro")
-		else
-			MacroFlyoutFrame:ClearAllPoints()
-			MacroFlyoutFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-			MacroFlyoutFrame:RegisterForDrag("LeftButton")
-		end 
-		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN) 
-	end )
+	MacroFlyoutFrame:SetScript("OnShow", L.MacroFlyoutFrame_OnShow )
 	MacroFlyoutFrame:SetScript("OnHide", function(self) self.Mode = nil end )
 	MacroFlyoutFrame:SetScript("OnDragStart", MacroFlyoutFrame.StartMoving)
 	MacroFlyoutFrame:SetScript("OnDragStop", MacroFlyoutFrame.StopMovingOrSizing)
-	
-	local buttons = {}
+	MacroFlyoutFrame.Buttons = {}
 	for i = 1,10 do
 		local button = CreateFrame("CheckButton", "MacroFlyoutFrameButton"..i, MacroFlyoutFrame, "SimplePopupButtonTemplate")
-		buttons[i] = button
+		MacroFlyoutFrame.Buttons[i] = button
 		button:SetID(i)
 		button:SetPoint("TOPLEFT", MacroFlyoutFrame, "TOPLEFT", 16+(i-1)*(8+button:GetWidth()), -16)
 		button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
@@ -67,18 +53,105 @@ function L.InitMacroFrame()
 		button.Clear = L.MacroFlyoutFrameButton_Clear
 		button:SetScript("OnEnter", L.MacroFlyoutFrameButton_OnEnter)
 		button:SetScript("OnLeave", L.MacroFlyoutFrameButton_OnLeave)
-		button:SetScript("OnDragStart", function() button:Clear(true) end )
+		button:SetScript("OnDragStart", L.MacroFlyoutFrameButton_Drag )
 		button:SetScript("OnReceiveDrag", L.MacroFlyoutFrameButton_Drop)
 		button:SetScript("OnClick", L.MacroFlyoutFrameButton_Drop)
-		
 	end
 	
-	-- TODO parse current open macro, also look for cancelmacro on left button
-	-- TODO save macrotext when saving, with charactercheck
-	-- TODO generate macrotext on updates
-	-- TODO errors into chat window?
-	
-	
+	MacroFlyoutFrame.InputDirection = CreateFrame("Frame", nil, MacroFlyoutFrame, "UIDropDownMenuTemplate")
+	MacroFlyoutFrame.InputDirection:SetPoint("CENTER")
+	MacroFlyoutFrame.InputDirection:SetPoint("TOPLEFT", MacroFlyoutFrame, "TOPLEFT", 4, -70)
+	MacroFlyoutFrame.InputDirection.Initialize = L.DropDownMenu_Initialize
+	MacroFlyoutFrame.InputDirection.SetValue = L.DropDownMenu_SetValue
+	MacroFlyoutFrame.InputDirection:Initialize({{text="Test1", value="t1"}, {text="Test2", value="t2"}})
+	MacroFlyoutFrame.InputDirection:SetValue()
+ 
+ 
+	-- TODO: dropdown for direction
+	-- TODO: dropdown for type
+	-- TODO: checkbox for stopping macro on click
+	-- TODO: checkbox for dynamic lists
+	-- TODO: overlay for buttons if dynamic
+	-- TODO: readonly editbox to store output
+end
+
+function L.DropDownMenu_Initialize(self, options)
+	self.options = options
+	UIDropDownMenu_Initialize(self, function(self, level, menuList)
+		for _, option in ipairs(options)
+		do
+			local info = UIDropDownMenu_CreateInfo()
+			for key, value in pairs(option)
+			do
+				info[key]=value
+			end
+			if info.checked
+			then
+				UIDropDownMenu_SetText(self, info.text)
+			end
+			UIDropDownMenu_AddButton(info)
+		end
+	end)
+end
+
+function L.DropDownMenu_SetValue(self, newvalue)
+	local first = (newvalue == nil)
+	UIDropDownMenu_Initialize(self, function(self, level, menuList)
+		for _, option in ipairs(self.options)
+		do
+			local info = UIDropDownMenu_CreateInfo()
+			for key, value in pairs(option)
+			do
+				info[key]=value
+			end
+			info.checked = (info.value == newvalue or first)
+			if info.checked
+			then
+				--print(info.value)
+				UIDropDownMenu_SetText(self, info.text)
+			end
+			UIDropDownMenu_AddButton(info)
+			first = false
+		end
+	end)
+end
+
+function L.MacroFlyoutFrame_OnUpdate(self)
+	print("TODO: generate macrotext on updates")
+	-- TODO: errors into chat window?
+end
+
+function L.MacroFlyoutFrame_OnSave(self)
+	if self.Mode=="MacroFrame" 
+	then
+		print("TODO: save macrotext when saving, with charactercheck")
+		-- TODO: errors into chat window?
+	end
+	return true
+end
+
+function L.MacroFlyoutFrame_OnShow(self)
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN) 
+	for _, button in ipairs(self.Buttons)
+	do
+		button:Clear()
+	end
+	if self.Mode=="MacroFrame" 
+	then 
+		MacroFlyoutFrame:ClearAllPoints()
+		MacroFlyoutFrame:SetPoint("TOPLEFT", MacroFrame, "TOPRIGHT", 0, 0)
+		MacroFlyoutFrame:RegisterForDrag(nil)
+		print("TODO: parse current open macro, also look for cancelmacro on left button")
+	else
+		MacroFlyoutFrame:ClearAllPoints()
+		MacroFlyoutFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		MacroFlyoutFrame:RegisterForDrag("LeftButton")
+	end 
+end
+
+function L.MacroFlyoutFrameButton_Drag(self)
+	self:Clear(true)
+	L.MacroFlyoutFrame_OnUpdate(MacroFlyoutFrame)
 end
 
 function L.MacroFlyoutFrameButton_Drop(self)
@@ -87,6 +160,7 @@ function L.MacroFlyoutFrameButton_Drop(self)
 	then 
 		ClearCursor() 
 		self:Set(infoType, arg1, arg2, arg3)
+		L.MacroFlyoutFrame_OnUpdate(MacroFlyoutFrame)
 	end
 end
 
