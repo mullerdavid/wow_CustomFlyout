@@ -27,6 +27,9 @@ T.DB.conjureSpellItemMap = { -- number or {talentTabIndex, talentTalentIndex, id
 	[27090] = 22018,
 	[10140] = 8079,
 	[37420] = 30703,
+	[42955] = 43518,
+	[42985] = 33312,
+	[42956] = 43523,
 	-- warlock 
 	[27250] = 22128,
 	[28172] = 22646,
@@ -43,6 +46,10 @@ T.DB.conjureSpellItemMap = { -- number or {talentTabIndex, talentTalentIndex, id
 	[20757] = 16896,
 	[20755] = 16893,
 	[27238] = 22116,
+	[47884] = 36895,
+	[60220] = 41174,
+	[47888] = 41196,
+	[60219] = 41173,
 	-- warlock hs
 	[6201]  = {2, 1, 5512, 19004, 19005},
 	[6202]  = {2, 1, 5511, 19006, 19007},
@@ -50,6 +57,8 @@ T.DB.conjureSpellItemMap = { -- number or {talentTabIndex, talentTalentIndex, id
 	[11729] = {2, 1, 5510, 19010, 19011},
 	[11730] = {2, 1, 9421, 19012, 19013},
 	[27230] = {2, 1, 22103, 22104, 22105},
+	[47871] = {2, 1, 36889, 36890, 36891},
+	[47878] = {2, 1, 36892, 36893, 36894},
 }
 
 T.DB.conjure = {
@@ -59,6 +68,8 @@ T.DB.conjure = {
 	"Conjure Mana Citrine",
 	"Conjure Mana Agate",
 	"Conjure Mana Jade",
+	"Conjure Mana Gem",
+	"Conjure Refreshment",
 	"Create Healthstone",
 	"Create Soulstone",
 	"Create Firstone",
@@ -66,10 +77,10 @@ T.DB.conjure = {
 }
 
 T.DB.spells = {
-	["profession"]= {"Alchemy", "Blacksmithing", "Enchanting", "Disenchant", "Engineering", "Leatherworking", "Smelting", "Tailoring", "Jewelcrafting", "Prospecting", "Cooking", "First Aid", "Poisons", "Pick lock"},
-	["portal"]= {"Portal: Shattrath", "Portal: Orgrimmar", "Portal: Undercity", "Portal: Thunder Bluff", "Portal: Silvermoon", "Portal: Stonard", "Portal: Stormwind", "Portal: Darnassus", "Portal: Ironforge", "Portal: Exodar", "Portal: Theramore"},
-	["teleport"]= {"Teleport: Shattrath", "Teleport: Orgrimmar", "Teleport: Undercity", "Teleport: Thunder Bluff", "Teleport: Silvermoon", "Teleport: Stonard", "Teleport: Stormwind", "Teleport: Darnassus", "Teleport: Ironforge", "Teleport: Exodar", "Teleport: Theramore"},
-	["warlockpet"]= {"Summon Imp", "Summon Voidwalker", "Summon Succubus", "Summon Felhunter", "Inferno", "Ritual of Doom", "Enslave Demon"},
+	["profession"]= {"Alchemy", "Blacksmithing", "Enchanting", "Disenchant", "Engineering", "Leatherworking", "Smelting", "Tailoring", "Jewelcrafting", "Prospecting", "Inscription", "Milling", "Cooking", "First Aid", "Poisons", "Pick lock"},
+	["portal"]= {"Portal: Dalaran", "Portal: Shattrath", "Portal: Orgrimmar", "Portal: Undercity", "Portal: Thunder Bluff", "Portal: Silvermoon", "Portal: Stonard", "Portal: Stormwind", "Portal: Darnassus", "Portal: Ironforge", "Portal: Exodar", "Portal: Theramore"},
+	["teleport"]= {"Teleport: Dalaran", "Teleport: Shattrath", "Teleport: Orgrimmar", "Teleport: Undercity", "Teleport: Thunder Bluff", "Teleport: Silvermoon", "Teleport: Stonard", "Teleport: Stormwind", "Teleport: Darnassus", "Teleport: Ironforge", "Teleport: Exodar", "Teleport: Theramore"},
+	["warlockpet"]= {"Summon Imp", "Summon Voidwalker", "Summon Incubus", "Summon Succubus", "Summon Felhunter", "Inferno", "Ritual of Doom", "Enslave Demon", "Subjugate Demon"},
 	["trap"]= {"Freezing Trap", "Frost Trap", "Immolation Trap", "Explosive Trap", "Snake Trap"},
 	["track"]= {"Find Herbs", "Find Minerals", "Find Fish", "Track Humanoids", "Track Beasts", "Track Demons", "Track Undead", "Track Dragonkin", "Track Elementals", "Track Giants", "Track Hidden", "Sense Demons"},
 	["aspect"]= {"Aspect of the Hawk", "Aspect of the Monkey", "Aspect of the Pack", "Aspect of the Cheetah", "Aspect of the Viper", "Aspect of the Beast", "Aspect of the Wild"},
@@ -77,9 +88,10 @@ T.DB.spells = {
 	["totem_earth"]= {"Strength of Earth Totem", "Stoneskin Totem", "Stoneclaw Totem", "Earthbind Totem", "Tremor Totem"},
 	["totem_fire"]= {"Totem of Wrath", "Searing Totem", "Frost Resistance Totem", "Fire Nova Totem", "Magma Totem", "Flametongue Totem"},
 	["totem_water"]= {"Healing Stream Totem", "Mana Spring Totem", "Fire Resistance Totem", "Mana Tide Totem", "Disease Cleansing Totem", "Poison Cleansing Totem"},
+	["shaman_weapon"]= {"Earthliving Weapon", "Earthliving Weapon", "Frostbrand Weapon", "Windfury Weapon", "Rockbiter Weapon"},
 }
 
-T.DB.item_ench_temp = { --https://tbc.wowhead.com/items/consumables/item-enhancements-temporary
+T.DB.item_ench_temp = { --https://www.wowhead.com/wotlk/items/consumables/item-enhancements-temporary
 	[20748] = true, -- Brilliant Mana Oil
 	[20749] = true, -- Brilliant Wizard Oil
 	[22522] = true, -- Superior Wizard Oil
@@ -200,6 +212,31 @@ T.DB.item_ench_temp = { --https://tbc.wowhead.com/items/consumables/item-enhance
 	[5654]  = true, -- Instant Toxin
 	[6950]  = true, -- Instant Poison III
 	[6951]  = true, -- Mind-numbing Poison II
+	[41196] = true, -- Grand Spellstone
+	[36900] = true, -- Exceptional Wizard Oil
+	[43231] = true, -- Instant Poison IX
+	[43233] = true, -- Deadly Poison IX
+	[41194] = true, -- Master Spellstone
+	[41174] = true, -- Grand Firestone
+	[43235] = true, -- Wound Poison VII
+	[46006] = true, -- Glow Worm
+	[40773] = true, -- Master Firestone
+	[41191] = true, -- Spellstone
+	[43232] = true, -- Deadly Poison VIII
+	[22521] = true, -- Superior Mana Oil
+	[41169] = true, -- Firestone
+	[43237] = true, -- Anesthetic Poison II
+	[41173] = true, -- Fel Firestone
+	[43230] = true, -- Instant Poison VIII
+	[12643] = true, -- Dense Weightstone
+	[36899] = true, -- Exceptional Mana Oil
+	[43234] = true, -- Wound Poison VI
+	[41192] = true, -- Greater Spellstone
+	[41193] = true, -- Major Spellstone
+	[41170] = true, -- Lesser Firestone
+	[41171] = true, -- Greater Firestone
+	[41172] = true, -- Major Firestone
+	[41195] = true, -- Demonic Spellstone
 }
 
 
