@@ -13,7 +13,12 @@ function L.InitMacroFrameBlizzard()
 	hooksecurefunc(MacroDeleteButton, "Disable", function() MacroFlyoutButton:Disable() end)
 	hooksecurefunc(MacroDeleteButton, "Enable", function() MacroFlyoutButton:Enable() end)
 	hooksecurefunc(MacroFrame, "Hide", function() if MacroFlyoutFrame.Mode=="MacroFrame" then MacroFlyoutFrame:Hide() end end)
-	hooksecurefunc("MacroFrame_Update", function() if MacroFlyoutFrame.Mode=="MacroFrame" then MacroFlyoutFrame:Hide() end end)
+	if MacroFrame_Update
+	then
+		hooksecurefunc("MacroFrame_Update", function() if MacroFlyoutFrame.Mode=="MacroFrame" then MacroFlyoutFrame:Hide() end end)
+	else
+		hooksecurefunc(MacroFrameMixin, "UpdateButtons", function() if MacroFlyoutFrame.Mode=="MacroFrame" then MacroFlyoutFrame:Hide() end end)
+	end
 	MacroFlyoutButton:SetScript("OnClick", function(self) MacroFlyoutFrame:Hide() MacroFlyoutFrame.Mode = "MacroFrame" MacroFlyoutFrame:Show() end )
 end
 
@@ -140,7 +145,7 @@ function L.MacroFlyoutFrame_OnShow(self)
 	then 
 		MacroFlyoutFrame:ClearAllPoints()
 		MacroFlyoutFrame:SetPoint("TOPLEFT", MacroFrame, "TOPRIGHT", 0, 0)
-		MacroFlyoutFrame:RegisterForDrag(nil)
+		MacroFlyoutFrame:RegisterForDrag("")
 		print("TODO: parse current open macro, also look for cancelmacro on left button")
 	else
 		MacroFlyoutFrame:ClearAllPoints()
@@ -167,7 +172,7 @@ end
 function L.MacroFlyoutFrameButton_Set(self, infoType, arg1, arg2, arg3, addToCursor)
 	self:Clear(true) 
 	self.info = {infoType, arg1, arg2, arg3}
-	self:SetNormalTexture(nil)
+	self:SetNormalTexture(0)
 	if infoType == "item"
 	then
 		local icon = GetItemIcon(arg1)
@@ -190,7 +195,7 @@ function L.MacroFlyoutFrameButton_Clear(self, addToCursor)
 		infoType, arg1, arg2, arg3 = unpack(self.info)
 	end
 	self.info = nil
-	self:SetNormalTexture(nil)
+	self:SetNormalTexture(0)
 	if addToCursor
 	then
 		if infoType == "item"
