@@ -666,9 +666,10 @@ function L.ProxyButtonsCreate()
 			^TinyExtraBarsContainerFrame%d+ButtonFrame%d+Button%d+_%d+$
 			]]--
 			
-			if name and not -- Blacklisted frames (incompatible addon)
+			if name and not -- Blacklisted frames (incompatible addon/frame)
 				(
-					string.find(name, "^ButtonForge%d+$") 
+					string.find(name, "^ButtonForge%d+$") or
+					string.find(name, "^OverrideActionBarButton%d+$") 
 				)
 			then
 				L.ProxyButtonCreate(frame)
