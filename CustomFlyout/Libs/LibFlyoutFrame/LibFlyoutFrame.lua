@@ -477,9 +477,9 @@ function L.FlyoutButtonCreate(parent)
 	
 	self:RegisterForClicks("AnyUp")
 	self:SetSize(28,28)
-	self:SetNormalTexture(nil)
-	self:SetPushedTexture(nil)
-	self:SetCheckedTexture(nil)
+	self:SetNormalTexture(0)
+	self:SetPushedTexture(0)
+	self:SetCheckedTexture(0)
 	self.Count:SetPoint("BOTTOMRIGHT", 0, 0)
 	self.updateCount = nil
 	self.icon:SetTexCoord(4/64, 60/64, 4/64, 60/64)

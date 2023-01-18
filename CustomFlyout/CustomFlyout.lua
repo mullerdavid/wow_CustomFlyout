@@ -273,6 +273,14 @@ function L.GenerateMacro(macro)
 	return {["$icon"]=icon, ["type"]="macro", ["macro"]=macro}
 end
 
+local function VersionedGetContainerNumSlots(bagID)
+	if C_Container and C_Container.GetContainerNumSlots then
+		return C_Container.GetContainerNumSlots(bagID)
+	else
+		return GetContainerNumSlots(bagID)
+	end
+end
+  
 function L.ActionGeneratorItemEnchant(list, mainType, subType, dynamic)
 	local dynamiccache = nil
 	if dynamic
@@ -281,7 +289,7 @@ function L.ActionGeneratorItemEnchant(list, mainType, subType, dynamic)
 		local set = {}
 		for bag=0,NUM_BAG_SLOTS
 		do
-			for slot=1,GetContainerNumSlots(bag)
+			for slot=1,VersionedGetContainerNumSlots(bag)
 			do
 				local id = GetContainerItemID(bag,slot)
 				if id and T.DB.item_ench_temp[id] and not set[id]
