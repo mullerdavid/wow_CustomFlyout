@@ -32,6 +32,9 @@ _G["SLASH_"..ADDON.."1"] = "/flyout"
 local LFF = LibStub:GetLibrary("LibFlyoutFrame-1.0")
 assert(LFF, ADDON .. " requires LibFlyoutFrame")
 
+
+local GetContainerNumSlots = _G.GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemID = _G.GetContainerItemID or C_Container.GetContainerItemID
 	
 local macros = {
 	--[[ macroid={GetMacroInfo plus flyout at end} ]]-- 
@@ -272,14 +275,6 @@ function L.GenerateMacro(macro)
 	icon = "texture:"..tostring(icon)..":"..tostring(name)
 	return {["$icon"]=icon, ["type"]="macro", ["macro"]=macro}
 end
-
-local function VersionedGetContainerNumSlots(bagID)
-	if C_Container and C_Container.GetContainerNumSlots then
-		return C_Container.GetContainerNumSlots(bagID)
-	else
-		return GetContainerNumSlots(bagID)
-	end
-end
   
 function L.ActionGeneratorItemEnchant(list, mainType, subType, dynamic)
 	local dynamiccache = nil
@@ -289,7 +284,7 @@ function L.ActionGeneratorItemEnchant(list, mainType, subType, dynamic)
 		local set = {}
 		for bag=0,NUM_BAG_SLOTS
 		do
-			for slot=1,VersionedGetContainerNumSlots(bag)
+			for slot=1,GetContainerNumSlots(bag)
 			do
 				local id = GetContainerItemID(bag,slot)
 				if id and T.DB.item_ench_temp[id] and not set[id]
