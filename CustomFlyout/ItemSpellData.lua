@@ -84,11 +84,11 @@ T.DB.spells = {
 	["trap"]= {"Freezing Trap", "Frost Trap", "Immolation Trap", "Explosive Trap", "Snake Trap"},
 	["track"]= {"Find Herbs", "Find Minerals", "Find Fish", "Track Humanoids", "Track Beasts", "Track Demons", "Track Undead", "Track Dragonkin", "Track Elementals", "Track Giants", "Track Hidden", "Sense Demons"},
 	["aspect"]= {"Aspect of the Hawk", "Aspect of the Monkey", "Aspect of the Pack", "Aspect of the Cheetah", "Aspect of the Viper", "Aspect of the Beast", "Aspect of the Wild"},
-	["totem_air"]= {"Windfury Totem", "Grace of Air Totem", "Wrath of Air Totem", "Nature Resistance Totem", "Windwall Totem", "Grounding Totem", "Sentry Totem", "Tranquil Air Totem"},
-	["totem_earth"]= {"Strength of Earth Totem", "Stoneskin Totem", "Stoneclaw Totem", "Earthbind Totem", "Tremor Totem"},
-	["totem_fire"]= {"Totem of Wrath", "Searing Totem", "Frost Resistance Totem", "Fire Nova Totem", "Magma Totem", "Flametongue Totem"},
-	["totem_water"]= {"Healing Stream Totem", "Mana Spring Totem", "Fire Resistance Totem", "Mana Tide Totem", "Disease Cleansing Totem", "Poison Cleansing Totem"},
-	["shaman_weapon"]= {"Earthliving Weapon", "Earthliving Weapon", "Frostbrand Weapon", "Windfury Weapon", "Rockbiter Weapon"},
+	["totem_air"]= {"Grounding Totem", "Nature Resistance Totem", "Windfury Totem", "Grace of Air Totem", "Windwall Totem", "Sentry Totem", "Tranquil Air Totem", "Wrath of Air Totem"},
+	["totem_earth"]= {"Earthbind Totem", "Stoneskin Totem", "Stoneclaw Totem", "Strength of Earth Totem", "Tremor Totem", "Earth Elemental Totem"},
+	["totem_fire"]= {"Totem of Wrath", "Searing Totem", "Fire Nova Totem", "Magma Totem", "Frost Resistance Totem", "Flametongue Totem", "Fire Elemental Totem"},
+	["totem_water"]= {"Fire Resistance Totem", "Mana Spring Totem", "Healing Stream Totem", "Mana Tide Totem", "Disease Cleansing Totem", "Poison Cleansing Totem", "Cleansing Totem"},
+	["shaman_weapon"]= {"Earthliving Weapon", "Frostbrand Weapon", "Flametongue Weapon", "Windfury Weapon", "Rockbiter Weapon"},
 }
 
 T.DB.item_ench_temp = { --https://www.wowhead.com/wotlk/items/consumables/item-enhancements-temporary
