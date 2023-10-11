@@ -669,7 +669,8 @@ function L.ProxyButtonsCreate()
 			if name and not -- Blacklisted frames (incompatible addon/frame)
 				(
 					string.find(name, "^ButtonForge%d+$") or
-					string.find(name, "^OverrideActionBarButton%d+$") 
+					string.find(name, "^OverrideActionBarButton%d+$") or
+					string.find(name, "^MultiCastActionButton%d+$") 
 				)
 			then
 				L.ProxyButtonCreate(frame)
