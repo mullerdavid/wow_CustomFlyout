@@ -65,7 +65,7 @@ Actions
 ]]--
 
 assert(LibStub, "LibFlyoutFrame requires LibStub")
-local MAJOR, MINOR = "LibFlyoutFrame-1.0", 0;
+local MAJOR, MINOR = "LibFlyoutFrame-1.0", 1;
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR);
 if not Lib then return end
 
@@ -85,6 +85,9 @@ local deferredQueue = {}
 local deferredFrame = CreateFrame("Frame")
 local actionkeys = {}
 
+local PlayerHasToy = _G.PlayerHasToy or function() return false end
+local GetToyInfo = _G.C_ToyBox and _G.C_ToyBox.GetToyInfo or function() end
+local IsToyUsable = _G.C_ToyBox and _G.C_ToyBox.IsToyUsable or function() end
 
 do -- lib entry points, deferred in combat
 
@@ -532,7 +535,12 @@ function L.FlyoutButtonUpdate(self)
 					L.FlyoutButtonUpdateCountItem(self, id)
 					self.updateCount = function() L.FlyoutButtonUpdateCountItem(self, id) end
 					self:RegisterEvent("BAG_UPDATE")
-					self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetItemByID(id) end)
+					if GetToyInfo(id)
+					then
+						self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetToyByItemID(id) end)
+					else
+						self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetItemByID(id) end)
+					end
 					self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 				end
 			elseif itype == "spell"
@@ -582,7 +590,8 @@ end
 function L.FlyoutButtonUpdateCountItem(self, id, noretry)
 	local desaturated = false
 	local count = GetItemCount(id)
-	if (count==0)
+	local isToy = GetToyInfo(id) and PlayerHasToy(id) and IsToyUsable(id)
+	if (count==0 and not isToy)
 	then
 		desaturated = true
 	end
@@ -600,7 +609,7 @@ function L.FlyoutButtonUpdateCountItem(self, id, noretry)
 		lookup[LE_ITEM_CLASS_TRADEGOODS]=true
 		lookup[LE_ITEM_CLASS_ITEM_ENHANCEMENT]=true
 		lookup[LE_ITEM_CLASS_QUESTITEM]=true
-		if lookup[t]
+		if lookup[t] and not GetToyInfo(id)
 		then
 			if ( count > MAX_COUNT)
 			then
