@@ -1,8 +1,9 @@
 local doc = [=[ [options] subType, list1, list2, ...
 [options] maximum one from each line, coma separated, optional
    left,right,up,down, defaults up for unknown buttons or default blizz frame direction
+   cooldown,cooldown_white or no cooldown by default
    item_ench_temp,conjure,spell,item,mixed defaults mixed
-item_ench_temp elements (poisons, wrightstones, oils, etc, left click for MH, right click for OH)
+item_ench_temp elements (poisons, weightstones, oils, etc, left click for MH, right click for OH)
    subType: dynamic or fixed
    list (for fixed): coma separated list of item ids or names
 conjure elements (left click use, right click conjure spell)
@@ -66,6 +67,7 @@ function L.UpdateMacros()
 					actions, dynamiccache = generator(list, mainType, subType, dynamic)
 				end
 				local dir = nil
+				local cd = nil
 				for _, option in ipairs(options)
 				do
 					if option=="left"
@@ -80,9 +82,16 @@ function L.UpdateMacros()
 					elseif option=="down"
 					then
 						dir = "DOWN"
+					elseif option=="cooldown"
+					then
+						cd = "BLACK"
+					elseif option=="cooldown_white"
+					then
+						cd = "WHITE"
 					end
 				end
 				LFF.SetOverrideDirection("Macro"..id, dir)
+				LFF.SetOverrideCooldown("Macro"..id, cd)
 				if dynamic
 				then
 					dynamiclist[id] = {

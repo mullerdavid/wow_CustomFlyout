@@ -44,6 +44,12 @@ SetOverrideDirection(parent|string, value, onsuccess)
 		string: the actionslot or macroid to override value on, MacroN or ActionN, where N is the slot/id
 		value: distance for the flyout background to start, default is 3, the size of border/shadow 
 		onsuccess: callback after the operation, as it can happen the execution is delayed due to combat lockdown
+		
+SetOverrideCooldown(parent|string, value, onsuccess)
+		parent: the parent button, eg ActionButton9 to override value on
+		string: the actionslot or macroid to override value on, MacroN or ActionN, where N is the slot/id
+		value: the cooldown color: NONE|BLACK|WHITE, nil equals NONE
+		onsuccess: callback after the operation, as it can happen the execution is delayed due to combat lockdown
 
 Actions
 	Structure to setup the flyout.
@@ -65,7 +71,7 @@ Actions
 ]]--
 
 assert(LibStub, "LibFlyoutFrame requires LibStub")
-local MAJOR, MINOR = "LibFlyoutFrame-1.0", 1;
+local MAJOR, MINOR = "LibFlyoutFrame-1.0", 3;
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR);
 if not Lib then return end
 
@@ -210,6 +216,10 @@ end
 
 function Lib.SetOverrideDistance(parent, value, onsuccess)
 	OverrideHelper(parent, "$distance", value, onsuccess)
+end
+
+function Lib.SetOverrideCooldown(parent, value, onsuccess)
+	OverrideHelper(parent, "$cooldown", value, onsuccess)
 end
 
 function Lib.Update(now, onsuccess)
@@ -513,6 +523,8 @@ function L.FlyoutButtonUpdate(self)
 	then
 		local icon = self:GetAttribute("$icon")
 		local oldicon = self.oldicon
+		local cooldown = self:GetAttribute("$cooldown")
+		self.updateCooldown = nil
 		if icon ~= oldicon
 		then
 			local iconid = ICON_UNKNOWN
@@ -534,6 +546,7 @@ function L.FlyoutButtonUpdate(self)
 					iconid = GetItemIcon(id)
 					L.FlyoutButtonUpdateCountItem(self, id)
 					self.updateCount = function() L.FlyoutButtonUpdateCountItem(self, id) end
+					self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 					self:RegisterEvent("BAG_UPDATE")
 					if GetToyInfo(id)
 					then
@@ -553,6 +566,7 @@ function L.FlyoutButtonUpdate(self)
 					L.FlyoutButtonUpdateCountSpell(self, id)
 					self.updateCount = function() L.FlyoutButtonUpdateCountSpell(self, id) end
 					self:RegisterEvent("BAG_UPDATE")
+					self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 					self:SetScript("OnEnter", function() GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4) GameTooltip:SetSpellByID(id) end)
 					self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 				end
@@ -571,6 +585,12 @@ function L.FlyoutButtonUpdate(self)
 			end
 			self.icon:SetTexture(iconid)
 			self.oldicon = icon
+			if cooldown
+			then
+				local color = cooldown
+				self.updateCooldown = function() L.FlyoutButtonUpdateCooldown(self, itype, id, color) end
+				self.updateCooldown()
+			end
 		end
 	else
 		L.FlyoutButtonReset(self)
@@ -579,13 +599,36 @@ end
 
 function L.FlyoutButtonReset(self)
 	self.updateCount = nil
+	self.updateCooldown = nil
+	self.cooldown:SetCooldown(0, 0)
 	self.Count:SetText("")
 	self.icon:SetDesaturated(false)
 	self:SetScript("OnEnter", nil)
 	self:SetScript("OnLeave", nil)
 	self:UnregisterEvent("BAG_UPDATE")
+	self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
 end
 
+function L.FlyoutButtonUpdateCooldown(self, itype, id, color)
+	local startTime, duration
+	if itype == "item"
+	then
+		startTime, duration = GetItemCooldown(id)
+	elseif itype == "spell"
+	then
+		startTime, duration = GetSpellCooldown(id)
+	end
+	if startTime and 0<startTime
+	then
+		if color == "WHITE"
+		then
+			self.cooldown:SetSwipeColor(1, 1, 1)
+		else
+			self.cooldown:SetSwipeColor(0, 0, 0)
+		end
+		self.cooldown:SetCooldown(startTime, duration)
+	end
+end
 
 function L.FlyoutButtonUpdateCountItem(self, id, noretry)
 	local desaturated = false
@@ -644,8 +687,12 @@ function L.FlyoutButtonUpdateCountSpell(self, id)
 end
 
 function L.FlyoutButtonOnEvent(self, event, ...)
-	if event == "BAG_UPDATE"
+	if event == "BAG_UPDATE" or event == "SPELL_UPDATE_COOLDOWN"
 	then
+		if self.updateCooldown
+		then
+			self.updateCooldown()
+		end
 		if self.updateCount
 		then
 			self.updateCount()
@@ -757,6 +804,7 @@ function L.ProxyButtonCreate(parent)
 		then
 			local direction = self:GetAttribute("$direction") or flyout:GetAttribute("$directionAction"..action) or flyout:GetAttribute("$directionMacro"..macroid) or self:GetAttribute("$defaultdirection") or "UP"
 			local distance = self:GetAttribute("$distance") or flyout:GetAttribute("distanceAction"..action) or flyout:GetAttribute("distanceMacro"..macroid) or 3
+			local cooldown = self:GetAttribute("$cooldown") or flyout:GetAttribute("$cooldownAction"..action) or flyout:GetAttribute("$cooldownMacro"..macroid)
 			
 			-- Update all buttons for this flyout
 			local prevButton = nil
@@ -826,7 +874,7 @@ function L.ProxyButtonCreate(parent)
 					end
 					oldaction = table.concat(oldaction)
 					button:SetAttribute("$oldaction", oldaction)
-					
+					button:SetAttribute("$cooldown", cooldown)
 					
 					button:Show()
 					prevButton = button
