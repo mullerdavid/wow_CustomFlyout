@@ -94,6 +94,7 @@ local actionkeys = {}
 local PlayerHasToy = _G.PlayerHasToy or function() return false end
 local GetToyInfo = _G.C_ToyBox and _G.C_ToyBox.GetToyInfo or function() end
 local IsToyUsable = _G.C_ToyBox and _G.C_ToyBox.IsToyUsable or function() end
+local GetItemCooldown = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown
 
 do -- lib entry points, deferred in combat
 
@@ -590,6 +591,8 @@ function L.FlyoutButtonUpdate(self)
 				local color = cooldown
 				self.updateCooldown = function() L.FlyoutButtonUpdateCooldown(self, itype, id, color) end
 				self.updateCooldown()
+			else
+				self.cooldown:SetAlpha(0)
 			end
 		end
 	else
@@ -600,7 +603,7 @@ end
 function L.FlyoutButtonReset(self)
 	self.updateCount = nil
 	self.updateCooldown = nil
-	self.cooldown:SetCooldown(0, 0)
+	self.cooldown:SetAlpha(0)
 	self.Count:SetText("")
 	self.icon:SetDesaturated(false)
 	self:SetScript("OnEnter", nil)
@@ -626,6 +629,7 @@ function L.FlyoutButtonUpdateCooldown(self, itype, id, color)
 		else
 			self.cooldown:SetSwipeColor(0, 0, 0)
 		end
+		self.cooldown:SetAlpha(1)
 		self.cooldown:SetCooldown(startTime, duration)
 	end
 end
