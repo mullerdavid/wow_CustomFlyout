@@ -1070,12 +1070,34 @@ end
 
 function L.ProxyButtonUpdate(self)
 	L.ProxyButtonUpdateArrowBorder(self)
+	L.ProxyButtonUpdateClickTrough(self)
 	if not InCombatLockdown()
 	then
 		flyout:SetAttribute("$lockbars", LOCK_ACTIONBAR)
 		if self.action
 		then
 			self.SetAttribute("$action", self.action)
+		end
+	end
+end
+
+function L.ProxyButtonUpdateClickTrough(self)
+	if not InCombatLockdown()
+	then
+		local action = L.ProxyButtonCalculateAction(self)
+		local isFlyout, macroid = L.FlyoutIsFlyout(action)
+		self:EnableMouse(isFlyout)
+		if macroid ~= nil
+		then
+			local macrobody = GetMacroBody(macroid)
+			self:SetAttribute("macro", macroid)
+			self:SetAttribute("*macrotext1", nil)
+			self:SetAttribute("*macrotext2", nil)
+		else
+			local parent = self:GetParent()
+			local parentName = parent:GetName()
+			self:SetAttribute("*macrotext1", "/click "..parentName)
+			self:SetAttribute("*macrotext2", "/click "..parentName.." RightButton ")
 		end
 	end
 end
@@ -1121,6 +1143,15 @@ function L.FlyoutIsFlyout(slot)
 	return false
 end
 
+L.GetMouseFocus = GetMouseFocus or function()
+	local foci = GetMouseFoci() 
+	if foci[1] ~= nil and foci[1][0] ~= nil
+	then
+		return foci[1][0]
+	end
+	return nil	
+end
+
 function L.ProxyButtonUpdateArrowBorder(self)
 	local action = L.ProxyButtonCalculateAction(self)
 	local isFlyout, macroid = L.FlyoutIsFlyout(action)
@@ -1128,8 +1159,8 @@ function L.ProxyButtonUpdateArrowBorder(self)
 	if isFlyout 
 	then
 		local direction = self:GetAttribute("$direction") or flyout:GetAttribute("$directionAction"..action) or flyout:GetAttribute("$directionMacro"..macroid) or self:GetAttribute("$defaultdirection") or "UP"
-		local clicked = (flyout:GetParent()==self and flyout:IsVisible()) or (GetMouseFocus() == self)
-	
+		local clicked = (flyout:GetParent()==self and flyout:IsVisible()) or (L.GetMouseFocus() == self)
+		
 		local arrowDistance
 		if clicked then
 			self.FlyoutBorder:Show()
