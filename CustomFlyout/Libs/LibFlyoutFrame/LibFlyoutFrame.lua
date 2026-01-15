@@ -489,7 +489,7 @@ function L.FlyoutButtonCreate(parent)
 	local self = CreateFrame("CheckButton", "CustomFlyoutButton"..num, parent, "ActionButtonTemplate,SecureActionButtonTemplate,SecureFrameTemplate,SecureHandlerBaseTemplate")
 	buttons[num] = self
 	
-	self:RegisterForClicks("AnyUp")
+	self:RegisterForClicks("AnyUp", "AnyDown")
 	self:SetSize(28,28)
 	self:SetNormalTexture(0)
 	self:SetPushedTexture(0)
@@ -498,6 +498,7 @@ function L.FlyoutButtonCreate(parent)
 	self.updateCount = nil
 	self.icon:SetTexCoord(4/64, 60/64, 4/64, 60/64)
 	self.icon:SetTexture(ICON_UNKNOWN)
+	self.Arrow:Hide()
 	self.oldicon = nil
 	
 	self:WrapScript(self, "OnClick", [=[ -- self, button, down
@@ -650,12 +651,12 @@ function L.FlyoutButtonUpdateCountItem(self, id, noretry)
 	else
 		local t,s=select(12, GetItemInfo(id))
 		local lookup = {}
-		lookup[LE_ITEM_CLASS_CONSUMABLE]=true
-		lookup[LE_ITEM_CLASS_REAGENT]=true
-		lookup[LE_ITEM_CLASS_PROJECTILE]=true
-		lookup[LE_ITEM_CLASS_TRADEGOODS]=true
-		lookup[LE_ITEM_CLASS_ITEM_ENHANCEMENT]=true
-		lookup[LE_ITEM_CLASS_QUESTITEM]=true
+		lookup[Enum.ItemClass.Consumable] = true
+		lookup[Enum.ItemClass.Reagent] = true
+		lookup[Enum.ItemClass.Projectile] = true
+		lookup[Enum.ItemClass.Tradegoods] = true
+		lookup[Enum.ItemClass.ItemEnhancement] = true
+		lookup[Enum.ItemClass.Questitem] = true
 		if lookup[t] and not GetToyInfo(id)
 		then
 			if ( count > MAX_COUNT)
@@ -1096,8 +1097,8 @@ function L.ProxyButtonUpdateClickTrough(self)
 		else
 			local parent = self:GetParent()
 			local parentName = parent:GetName()
-			self:SetAttribute("*macrotext1", "/click "..parentName)
-			self:SetAttribute("*macrotext2", "/click "..parentName.." RightButton ")
+			self:SetAttribute("*macrotext1", "click "..parentName)
+			self:SetAttribute("*macrotext2", "click "..parentName.." RightButton ")
 		end
 	end
 end

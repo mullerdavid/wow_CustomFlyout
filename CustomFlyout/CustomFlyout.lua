@@ -503,7 +503,7 @@ local function OnEvent(self, event, arg1)
 	elseif event == "BAG_UPDATE" and worldEnterd
 	then
 		L.UpdateDynamic("bag")
-	elseif event == "LEARNED_SPELL_IN_TAB" and worldEnterd
+	elseif event == "SPELLS_CHANGED" and worldEnterd
 	then
 		L.UpdateDynamic("spell")
 	end
@@ -514,7 +514,7 @@ frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("UPDATE_MACROS")
 frame:RegisterEvent("BAG_UPDATE")
-frame:RegisterEvent("LEARNED_SPELL_IN_TAB")
+frame:RegisterEvent("SPELLS_CHANGED")
 frame:SetScript("OnEvent", OnEvent)
 
 
