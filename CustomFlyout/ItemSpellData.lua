@@ -90,6 +90,9 @@ T.DB.spells = {
 	["totem_fire"]= {"Totem of Wrath", "Searing Totem", "Fire Nova Totem", "Magma Totem", "Frost Resistance Totem", "Flametongue Totem", "Fire Elemental Totem"},
 	["totem_water"]= {"Fire Resistance Totem", "Mana Spring Totem", "Healing Stream Totem", "Mana Tide Totem", "Disease Cleansing Totem", "Poison Cleansing Totem", "Cleansing Totem"},
 	["shaman_weapon"]= {"Earthliving Weapon", "Frostbrand Weapon", "Flametongue Weapon", "Windfury Weapon", "Rockbiter Weapon"},
+	["blessing"] = {"Blessing of Might", "Blessing of Wisdom", "Blessing of Kings", "Blessing of Sanctuary", "Blessing of Salvation", "Blessing of Light", "Blessing of Freedom", "Blessing of Protection", "Blessing of Sacrifice"},
+	["blessing_greater"] = {"Greater Blessing of Might", "Greater Blessing of Wisdom", "Greater Blessing of Kings", "Greater Blessing of Sanctuary", "Greater Blessing of Salvation", "Greater Blessing of Light"},
+	["seal"] = {"Seal of Wisdom", "Seal of Light", "Seal of Justice", "Seal of Righteousness", "Seal of the Crusader", "Seal of Command", "Seal of Blood", "Seal of the Martyr", "Seal of Vengeance", "Seal of Corruption"},
 }
 
 T.DB.item_ench_temp = { --https://www.wowhead.com/wotlk/items/consumables/item-enhancements-temporary
